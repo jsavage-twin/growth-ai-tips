@@ -1,8 +1,18 @@
-app: growth-ai-tips
+version: 0.0.1
+name: growth-ai-tips
+namespace: tools
 description: Growth AI Prompt Library — #growth-ai Tip of the Day archive with searchable prompts, copy buttons, and skill install
-language: nodejs
-healthcheck: /
-build:
-  command: node build.js
-start:
-  command: node server.js
+authors:
+  - Josh Savage <josh.savage@airbnb.com>
+build_enabled: false
+
+entry_points:
+  main:
+    type: shell
+    command: >-
+      PORT={{ port }}
+      node build.js && node server.js
+    parameters:
+      port:
+        type: int
+        default: 8001
