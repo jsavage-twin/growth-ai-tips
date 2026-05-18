@@ -1,0 +1,8 @@
+app: growth-ai-tips
+description: Growth AI Prompt Library — #growth-ai Tip of the Day archive with searchable prompts, copy buttons, and skill install
+language: nodejs
+healthcheck: /
+build:
+  command: node build.js
+start:
+  command: node server.js
