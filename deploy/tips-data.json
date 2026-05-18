@@ -185,5 +185,16 @@
     "what_to_change": ["The number of attempts (3 is usually right)", "What 'required data' means for your specific workflow"],
     "example_output": "When the agent can't find what it needs, it returns: 'BLOCKED — could not find [X] after 3 attempts. Last tool result: [Y]. Suggest: [alternative approach].' Instead of a confident wrong answer delivered at 3am.",
     "tags": ["agentic", "error-handling", "safety"]
+  },
+  {
+    "id": 18,
+    "date": "2026-05-19",
+    "title": "Show Claude What You Want — Don't Describe It",
+    "category": "Prompting",
+    "concept": "Telling Claude what you want gets you average. Showing Claude what you want gets you on-brand. Paste 2-3 examples you've loved and ask it to match — the model extracts tone, word choice, length, and the ratio of specificity to intrigue automatically.",
+    "prompt": "Here are three [subject lines / copy blocks / briefs] I've loved:\n\n1. [paste example]\n2. [paste example]\n3. [paste example]\n\nWrite 5 [subject lines / copy blocks / briefs] in the same style for: [your brief or context].",
+    "what_to_change": ["Your 2-3 real examples (the more specific and on-brand, the better)", "The content type: subject lines, briefs, copy blocks, headlines, CTAs", "Your brief or context for the new content"],
+    "example_output": "5 subject lines that match the implicit pattern of your examples — same length, same ratio of specificity to intrigue, same word register — without you having to define any of it as adjectives like 'warm' or 'direct.'",
+    "tags": ["prompting", "style", "examples", "copywriting", "swipe-file"]
   }
 ]
