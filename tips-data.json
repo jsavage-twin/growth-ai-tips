@@ -4,8 +4,13 @@
     "date": "2026-04-06",
     "title": "CLAUDE.md: Layered Context System",
     "category": "Claude Code",
+    "platforms": ["airchat"],
     "concept": "CLAUDE.md files are loaded automatically based on your working directory, creating a layered context system so Claude always has the right background without you repeating yourself.",
     "prompt": "I want to set up a CLAUDE.md hierarchy for my projects. Here's my folder structure:\n\n[paste your folder structure]\n\nCreate a CLAUDE.md for each level: global rules at ~/.claude/, portfolio map at ~/projects/, domain knowledge at the team folder, and project-specific context at the repo level.",
+    "desktop_variant": {
+      "prompt": "I want to build a persistent context block I can paste at the start of any session. My domain is [team/role]. Here's what Claude always needs to know:\n- My role: [e.g. Growth marketer at Airbnb]\n- My tools: [e.g. Canvas, Trino, Sandcastle]\n- My style preferences: [e.g. concise, no jargon, bullet points]\n- Recurring context: [e.g. campaigns target hosts in US/EU]\n\nWrite this as a single paste-in block I can use to open any new conversation.",
+      "note": "In Claude desktop, you can't auto-load files — but you can build a paste-in context block that functions the same way. Keep it in a doc and paste it at the top of important sessions."
+    },
     "what_to_change": ["Your actual folder structure", "The specific domain knowledge for each team (e.g. 'marketing', 'data', 'growth')", "Project-specific tools, agents, and boundaries"],
     "example_output": "A set of layered CLAUDE.md files where ~/.claude/CLAUDE.md contains working style rules, ~/projects/CLAUDE.md maps your project portfolio, and each team/project folder has its own domain context — so Claude always knows what it's working in.",
     "tags": ["claude-code", "setup", "context"]
@@ -15,8 +20,13 @@
     "date": "2026-04-07",
     "title": "Skills: Encode Complex Workflows as Slash Commands",
     "category": "Claude Code",
+    "platforms": ["airchat"],
     "concept": "Skills turn multi-step workflows into simple slash commands. /commit, /datako, /morning — stop re-explaining workflows and start invoking them.",
     "prompt": "I want to build a skill for [describe the workflow you repeat]. Here's what I currently do each time:\n\n[paste your manual steps]\n\nWrite a SKILL.md file that encodes this as a slash command I can run with /[skill-name].",
+    "desktop_variant": {
+      "prompt": "I want to create a reusable workflow template for [describe what you repeat]. Here's what I currently do each time:\n\n[paste your manual steps]\n\nWrite this as a system prompt I can paste at the start of any session to run this workflow without re-explaining it. Format it so I just need to add the specific input at the bottom.",
+      "note": "In Claude desktop, you can't install slash commands — but you can build a reusable system prompt that lives in a doc. Paste it at the top of a new conversation to get the same result."
+    },
     "what_to_change": ["The workflow you want to encode", "Your manual steps", "The skill name"],
     "example_output": "A SKILL.md file saved to ~/.claude/skills/[name].md that Claude loads and executes with a single /command, replacing a multi-step manual process.",
     "tags": ["claude-code", "automation", "skills"]
@@ -24,30 +34,41 @@
   {
     "id": 3,
     "date": "2026-04-09",
-    "title": "/resume and /btw: Session Recovery and Mid-Run Questions",
+    "title": "Session Recovery and Mid-Run Questions",
     "category": "Claude Code",
+    "platforms": ["airchat"],
     "concept": "Use /resume to recover a session you exited. Use /btw to ask questions mid-run without interrupting the flow.",
-    "prompt": "Mid-run example: type /btw then ask 'What step are you on right now and what's the plan for the next 3?' — you'll get a status update without breaking anything.",
+    "prompt": "Airchat/Claude Code:\n• /resume — recovers the last session you exited\n• /btw [your question] — asks mid-run without stopping the task\n\nExample mid-run: /btw What step are you on and what's the plan for the next 3?",
+    "desktop_variant": {
+      "prompt": "At the end of any valuable session, ask:\n\n\"Summarize where we are — what's been done, what's next, and any decisions made. Format it as a brief I can paste at the start of a new conversation to pick up exactly here.\"\n\nSave that output to a doc. Next session: open a new conversation, paste the brief, and continue.",
+      "note": "Claude desktop doesn't have /resume or /btw — but session recovery works just as well with a 'state brief' you paste at the start of a new chat. Takes 30 seconds to generate at the end of any session worth continuing."
+    },
     "what_to_change": ["The question you want answered mid-run"],
     "example_output": "A status update mid-execution: current step, what's next, any blockers — without stopping the task.",
-    "tags": ["claude-code", "shortcuts"]
+    "tags": ["claude-code", "shortcuts", "session-management"]
   },
   {
     "id": 4,
     "date": "2026-04-13",
-    "title": "Ctrl+O: See What Claude Is Actually Thinking",
+    "title": "See What Claude Is Actually Thinking",
     "category": "Claude Code",
-    "concept": "Ctrl+O opens Claude's extended thinking panel — surfaces what assumptions it's making from your prompt. Use it to debug when outputs feel off.",
-    "prompt": "Run Ctrl+O after any response that felt off or unexpected. Look for: what problem Claude thinks you're solving, what constraints it assumed, and what it decided to prioritize.",
-    "what_to_change": ["Nothing — this is a keyboard shortcut, not a prompt technique"],
-    "example_output": "A visible reasoning trace showing Claude's interpretation of your prompt — useful for catching mismatches between what you meant and what Claude understood.",
-    "tags": ["claude-code", "debugging", "shortcuts"]
+    "platforms": ["airchat"],
+    "concept": "Ctrl+O opens Claude's extended thinking panel in Airchat — surfaces what assumptions it's making from your prompt. Use it to debug when outputs feel off.",
+    "prompt": "In Airchat: press Ctrl+O after any response that felt off. Look for: what problem Claude thinks you're solving, what constraints it assumed, what it decided to prioritize.",
+    "desktop_variant": {
+      "prompt": "Add this to the end of any prompt where the output felt off:\n\n\"Before you answer, think out loud: what do you think I'm actually asking for here? What assumptions are you making about my goal, my audience, and the format I want? State those assumptions explicitly, then give your answer.\"\n\nThis surfaces the same reasoning Ctrl+O shows in Airchat — you can catch and correct mismatches before they compound.",
+      "note": "Claude desktop doesn't have Ctrl+O — but you can ask Claude to externalize its reasoning inline with a 'think out loud' prefix. Works in any interface."
+    },
+    "what_to_change": ["Nothing for Airchat — it's a keyboard shortcut", "For desktop: add the 'think out loud' prefix to the specific prompt that felt wrong"],
+    "example_output": "A visible reasoning trace: 'I assumed you wanted a formal summary for an exec, so I kept it brief and avoided technical detail. If you want depth, tell me who the real audience is.' — lets you correct the assumption before re-running.",
+    "tags": ["claude-code", "debugging", "shortcuts", "prompting"]
   },
   {
     "id": 5,
     "date": "2026-04-14",
     "title": "LLM Fusion Hub: Unlock Claude API for Your Builds",
     "category": "Claude Code",
+    "platforms": ["airchat"],
     "concept": "LLM Fusion Hub provides the API tokens needed for Anthropic integration in Sandcastle prototypes. Point your build there instead of managing tokens manually.",
     "prompt": "I'm building a Sandcastle prototype and need to integrate Claude. Help me connect to LLM Fusion Hub at developers.a.musta.ch and set up the API token flow for Anthropic/Claude.",
     "what_to_change": ["Your specific prototype's tech stack", "Whether you need streaming, tools, or basic chat"],
@@ -57,10 +78,15 @@
   {
     "id": 6,
     "date": "2026-04-17",
-    "title": "/loop: Automate Recurring Tasks",
+    "title": "Automate Recurring Tasks",
     "category": "Claude Code",
-    "concept": "Use /loop to schedule skills to run automatically — morning summaries to your Slack DM, dashboard refreshes, weekly digests.",
-    "prompt": "/loop 8:55am /morning\n\nOr for a recurring query: /loop 9am \"Run the weekly campaign performance summary and post to #growth-ai\"",
+    "platforms": ["airchat"],
+    "concept": "Use /loop in Airchat to schedule skills to run automatically — morning summaries to your Slack DM, dashboard refreshes, weekly digests.",
+    "prompt": "/loop 8:55am /morning\n\nOr for a recurring task:\n/loop 9am \"Run the weekly campaign performance summary and post to #growth-ai\"",
+    "desktop_variant": {
+      "prompt": "I want to set up a recurring [daily/weekly] routine that [describe what you want automated — e.g. 'summarizes my Slack mentions and sends them to me']. Here's what I need it to do:\n\n[describe the steps]\n\nWrite this as a prompt I can use as a scheduled task, and suggest the best tool or workflow to trigger it on a schedule (n8n, cron, Mac Automator, etc.).",
+      "note": "Claude desktop doesn't have /loop — but you can build the same automation by combining a saved prompt with a scheduler (n8n, Mac Automator, or a simple cron job). Airchat's /loop is the shortcut version of that same idea."
+    },
     "what_to_change": ["The time you want it to run", "The skill or task to execute", "The destination (Slack channel, DM, etc.)"],
     "example_output": "An automated routine that runs on schedule without you initiating it — e.g. a morning briefing in your Slack DM every day at 8:55am.",
     "tags": ["claude-code", "automation", "scheduling"]
@@ -68,11 +94,16 @@
   {
     "id": 7,
     "date": "2026-04-21",
-    "title": "Slack Integration: Read + Write + Build a 'You' Agent",
+    "title": "Slack Integration: Build a 'You' Agent",
     "category": "Claude Code",
-    "concept": "Slack is now read/write in Claude. Use it to scrape your communication style and build a 'you' agent, save formats specific users prefer, or run a /morning skill that reviews your Slack mentions and priorities.",
+    "platforms": ["airchat", "universal"],
+    "concept": "Slack is read/write in Airchat. Use it to scrape your communication style and build a 'you' agent, or run a morning skill that reviews your Slack mentions and priorities.",
     "prompt": "Read the last 30 messages I've sent in Slack. Identify: my typical sentence length, how I open messages, how I close them, my emoji usage, and the level of formality I use with different people. Then summarize my communication style as a profile I can reuse.",
-    "what_to_change": ["Which channels or threads to analyze", "Whose messages to study (yours vs. a stakeholder's)", "What attributes matter to you (formality, length, structure)"],
+    "desktop_variant": {
+      "prompt": "I want to build a 'communication style' profile I can reuse. Here's a sample of messages I've sent recently:\n\n[paste 5-10 real Slack/email messages you've written]\n\nIdentify: my typical sentence length, how I open messages, how I close them, my tone across different contexts, and any patterns in how I structure information. Write this as a reusable persona I can prepend to any writing task.",
+      "note": "In Claude desktop, paste your own messages manually instead of pulling from Slack directly. The output is the same — a communication style profile you can reuse."
+    },
+    "what_to_change": ["Which channels or threads to analyze (Airchat) or which messages to paste (desktop)", "Whose messages to study (yours vs. a stakeholder's)", "What attributes matter to you (formality, length, structure)"],
     "example_output": "A communication style profile: 'Josh writes in short punchy sentences, opens with context not pleasantries, uses questions to drive decisions, rarely uses emoji except in casual channels.' Reusable as a persona prefix.",
     "tags": ["slack", "automation", "persona"]
   },
@@ -81,8 +112,13 @@
     "date": "2026-04-28",
     "title": "Scheduled Routines: Daily Summaries and Auto-Queries",
     "category": "Claude Code",
+    "platforms": ["airchat"],
     "concept": "Combine /loop with skills to auto-run daily summaries to Slack DM or recurring dashboard queries — no manual trigger needed.",
     "prompt": "Build a routine that runs every Monday at 9am: pull last week's campaign performance from the data warehouse, format it as a 5-bullet summary with the top metric, biggest mover, and one recommendation, then post it to #growth-ai.",
+    "desktop_variant": {
+      "prompt": "I want a weekly performance summary I can run in one click. Here's the context:\n- Data source: [e.g. our campaign dashboard / a SQL query / a spreadsheet]\n- Metrics I care about: [e.g. open rate, clicks, conversions]\n- Format: 5 bullets — top metric, biggest mover, one recommendation\n- Audience: [who sees this]\n\nWrite a prompt template I can run every Monday morning by pasting it with fresh data.",
+      "note": "Claude desktop can't auto-trigger on a schedule — but you can build a 'Monday morning prompt' that's one paste away. Pair it with a calendar reminder and it's nearly as good."
+    },
     "what_to_change": ["The schedule (daily, weekly, specific days)", "The data source and query", "The format and destination channel"],
     "example_output": "An automated weekly post in #growth-ai with a structured performance summary — no manual effort after setup.",
     "tags": ["automation", "scheduling", "data"]
@@ -92,6 +128,7 @@
     "date": "2026-05-04",
     "title": "Meeting Prep in 30 Seconds",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Paste any doc, deck, or email thread before a meeting and get a cheat sheet: key points, open questions, 3 things to bring up. No setup required.",
     "prompt": "Here's the doc/deck/thread for my meeting in [X minutes]:\n\n[paste content]\n\nSummarize the key points, flag any open questions or unresolved decisions, and give me 3 things I should bring up or push on.",
     "what_to_change": ["The doc, deck, or thread content", "Meeting context if relevant (who's in the room, what decision is being made)"],
@@ -103,10 +140,11 @@
     "date": "2026-05-05",
     "title": "Role-Frame Before You Ask",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Assign Claude a specific perspective before asking for critique. 'Skeptical VP who's seen a hundred of these' produces sharper feedback than 'review this.' Works on any deliverable.",
     "prompt": "You're a skeptical VP who's seen a hundred of these. What's missing, what's weak, and what would you push back on?\n\n[paste your brief/email/strategy/proposal]",
     "what_to_change": ["The role (skeptical VP, experienced operator, target customer, journalist, competitor)", "The deliverable being reviewed", "What type of feedback you need (gaps, risks, pushback, tone)"],
-    "example_output": "Direct, specific critique: 'The success metric is undefined — a VP will ask what 'improved engagement' means in numbers. The timeline has no buffer. The recommendation buries the ask in paragraph 3.' Not polite agreement.",
+    "example_output": "Direct, specific critique: 'The success metric is undefined — a VP will ask what improved engagement means in numbers. The timeline has no buffer. The recommendation buries the ask in paragraph 3.' Not polite agreement.",
     "tags": ["prompting", "critique", "role-playing"]
   },
   {
@@ -114,6 +152,7 @@
     "date": "2026-05-06",
     "title": "Force the Final Deliverable",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Stop using Claude as a drafting assistant. Force it to produce the final, shareable deliverable directly — ready to send, not requiring a rewrite.",
     "prompt": "Give me a one-pager a CMO could read in 90 seconds and make a go/no-go call on. No fluff, no caveats. Lead with the recommendation. Here's the context:\n\n[paste context]",
     "what_to_change": ["The audience and their time constraint", "The decision they need to make", "The format (one-pager, exec summary, Slack message, email)"],
@@ -125,6 +164,7 @@
     "date": "2026-05-07",
     "title": "Ask What You Should Be Asking",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Before strategic work, ask Claude what question you're not asking. Break your own framing before you commit to it.",
     "prompt": "Here's the situation:\n\n[paste context — brief, strategy, problem statement]\n\nWhat's the most important question I'm probably not asking that I should be asking before I proceed?",
     "what_to_change": ["Your actual situation/context", "Optionally specify the domain: 'in terms of risk', 'from a customer perspective', 'about the data'"],
@@ -136,6 +176,7 @@
     "date": "2026-05-08",
     "title": "Pre-Mortem: Ask for the Failure Story",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Don't ask 'what could go wrong' — you get a generic list. Ask Claude to write the post-mortem. Narrative format forces specificity.",
     "prompt": "It's 6 months from now and this failed badly. Walk me through what happened — the specific sequence of events, decisions that didn't land, and signals we missed.\n\n[paste your plan/campaign/strategy]\n\nThen ask: Which of these could we have seen coming?",
     "what_to_change": ["The plan, campaign, or strategy being evaluated", "Optionally specify the failure mode: 'focus on adoption failures', 'focus on execution risks'"],
@@ -147,6 +188,7 @@
     "date": "2026-05-12",
     "title": "Split Complex Asks Into Steps",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Never pack multi-part tasks into one prompt. Ask the model to plan first, then execute each step. Each call is sharper because the previous output grounds it.",
     "prompt": "Step 1 — Planning:\n\"Here's the task: [describe complex task]. Before doing anything, write out a step-by-step plan. List each step, what input it needs, and what it produces. Don't execute yet.\"\n\nStep 2 — Execute:\n\"Now run Step 1: [step name]. Here's the input: [paste]\"\n\nRepeat for each step.",
     "what_to_change": ["Your complex task description", "The inputs for each step as you execute"],
@@ -158,6 +200,7 @@
     "date": "2026-05-12",
     "title": "Context First: What You Put In Determines What You Get Out",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "AI doesn't know your situation unless you tell it. Add 2-3 sentences of background before any question — who it's for, what you're trying to do, what constraints matter.",
     "prompt": "Context: I'm [role] working on [project]. The audience is [who], the goal is [outcome], and the constraint is [time/format/tone].\n\nNow: [your actual question or task]",
     "what_to_change": ["Your role and project", "The audience", "The goal and the specific constraint that matters most"],
@@ -169,6 +212,7 @@
     "date": "2026-05-13",
     "title": "Session Distillation: Write the Prompt for Your Next Session",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Long sessions degrade. Outputs get softer and more generic after 30+ messages. End every productive session with a distilled prompt that lets you resume at full quality.",
     "prompt": "Before you close a session:\n\"Summarize everything we've established — my goal, the constraints, the decisions we made, and any context I'd need to resume this cold. Write it as a single prompt I can paste at the start of a new session to pick up exactly where we left off.\"",
     "what_to_change": ["Nothing — use this verbatim at the end of any valuable session"],
@@ -180,6 +224,7 @@
     "date": "2026-05-14",
     "title": "Agent Stop Conditions: Prevent Confident Hallucination",
     "category": "Agentic",
+    "platforms": ["airchat", "universal"],
     "concept": "Agents without stop conditions hallucinate confidently. Add one line to every agent prompt: if you can't find the data after 3 attempts, stop and return a failure summary.",
     "prompt": "Add this to every agent prompt:\n\n\"If you cannot find the required data after 3 attempts, or if a tool is unavailable, STOP immediately and return a failure summary — do NOT keep retrying or filling in assumptions. A clear error message is more valuable than a wrong answer.\"\n\nAnd add this to your design process:\n\"What does failure look like for this agent?\" before \"What does success look like?\"",
     "what_to_change": ["The number of attempts (3 is usually right)", "What 'required data' means for your specific workflow"],
@@ -191,6 +236,7 @@
     "date": "2026-05-19",
     "title": "Show Claude What You Want — Don't Describe It",
     "category": "Prompting",
+    "platforms": ["universal"],
     "concept": "Telling Claude what you want gets you average. Showing Claude what you want gets you on-brand. Paste 2-3 examples you've loved and ask it to match — the model extracts tone, word choice, length, and the ratio of specificity to intrigue automatically.",
     "prompt": "Here are three [subject lines / copy blocks / briefs] I've loved:\n\n1. [paste example]\n2. [paste example]\n3. [paste example]\n\nWrite 5 [subject lines / copy blocks / briefs] in the same style for: [your brief or context].",
     "what_to_change": ["Your 2-3 real examples (the more specific and on-brand, the better)", "The content type: subject lines, briefs, copy blocks, headlines, CTAs", "Your brief or context for the new content"],

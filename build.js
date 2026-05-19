@@ -41,6 +41,12 @@ const html = `<!DOCTYPE html>
   .filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .filter-btn { border: 1px solid #e8e8e4; background: #fff; border-radius: 20px; padding: 7px 14px; font-size: 13px; cursor: pointer; color: #484848; }
   .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  /* Platform toggle */
+  .platform-group { display: flex; gap: 0; background: #f0f0ee; border-radius: 22px; padding: 3px; }
+  .platform-btn { border: none; border-radius: 19px; padding: 6px 13px; font-size: 12px; font-weight: 500; cursor: pointer; color: #717171; background: transparent; white-space: nowrap; }
+  .platform-btn.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+
   .count { font-size: 13px; color: #717171; margin-left: auto; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
@@ -48,10 +54,14 @@ const html = `<!DOCTYPE html>
   .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 14px; overflow: hidden; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s; display: flex; flex-direction: column; }
   .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
   .card-header { padding: 20px 20px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .category-badge { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; }
+  .card-meta { display: flex; flex-direction: column; gap: 4px; }
+  .category-badge { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; align-self: flex-start; }
   .badge-Prompting { background: #FFF3E0; color: #E65100; }
   .badge-Claude-Code { background: #E8F5E9; color: #2E7D32; }
   .badge-Agentic { background: #EDE7F6; color: #4527A0; }
+  .platform-chip { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 8px; border-radius: 10px; align-self: flex-start; }
+  .chip-airchat { background: #E3F2FD; color: #1565C0; }
+  .chip-universal { display: none; }
   .card-date { font-size: 11px; color: #b0b0b0; margin-top: 3px; }
   .card-body { padding: 16px 20px; flex: 1; }
   .card-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
@@ -89,6 +99,12 @@ const html = `<!DOCTYPE html>
   .btn-copy-full { width: 100%; background: #FF5A5F; color: white; border: none; border-radius: 10px; padding: 13px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
   .btn-copy-full:hover { background: #e04e53; }
   .btn-copy-full.copied { background: #2E7D32; }
+
+  /* Modal platform toggle */
+  .modal-platform-row { display: flex; gap: 0; background: #f0f0ee; border-radius: 10px; padding: 3px; margin-bottom: 0; }
+  .modal-platform-btn { flex: 1; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 500; cursor: pointer; color: #717171; background: transparent; text-align: center; }
+  .modal-platform-btn.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .desktop-note { background: #FFF8E1; border-left: 3px solid #F9A825; border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 12px; color: #5D4037; line-height: 1.6; margin-top: 10px; }
 
   /* Install modal */
   .install-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 24px; }
@@ -134,6 +150,11 @@ const html = `<!DOCTYPE html>
       <button class="filter-btn" data-cat="Claude Code">Claude Code</button>
       <button class="filter-btn" data-cat="Agentic">Agentic</button>
     </div>
+    <div class="platform-group" id="platform-filters">
+      <button class="platform-btn active" data-platform="all">All platforms</button>
+      <button class="platform-btn" data-platform="airchat">Airchat / Claude Code</button>
+      <button class="platform-btn" data-platform="desktop">Claude Desktop</button>
+    </div>
     <div class="count" id="count"></div>
   </div>
 
@@ -159,13 +180,23 @@ const html = `<!DOCTYPE html>
 <script>
 let TIPS = [];
 let activeFilter = 'all';
-let activeModal = null;
+let activePlatform = 'all';
+let activeModalPlatform = 'airchat';
 
 async function init() {
   const res = await fetch('/tips-data.json');
   TIPS = await res.json();
   render();
   bindEvents();
+}
+
+function isAirchatOnly(t) {
+  return t.platforms && t.platforms.length === 1 && t.platforms[0] === 'airchat';
+}
+
+function effectivePrompt(t, platform) {
+  if (platform === 'desktop' && t.desktop_variant) return t.desktop_variant.prompt;
+  return t.prompt;
 }
 
 function bindEvents() {
@@ -176,6 +207,14 @@ function bindEvents() {
     if (!btn) return;
     activeFilter = btn.dataset.cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+
+  document.getElementById('platform-filters').addEventListener('click', e => {
+    const btn = e.target.closest('.platform-btn');
+    if (!btn) return;
+    activePlatform = btn.dataset.platform;
+    document.querySelectorAll('.platform-btn').forEach(b => b.classList.toggle('active', b === btn));
     render();
   });
 
@@ -212,10 +251,13 @@ function render() {
 
   const filtered = TIPS.filter(t => {
     if (activeFilter !== 'all' && t.category !== activeFilter) return false;
+    // Desktop filter: hide airchat-only tips
+    if (activePlatform === 'desktop' && isAirchatOnly(t)) return false;
     if (!q) return true;
     return t.title.toLowerCase().includes(q) ||
       t.concept.toLowerCase().includes(q) ||
       t.prompt.toLowerCase().includes(q) ||
+      (t.desktop_variant && t.desktop_variant.prompt.toLowerCase().includes(q)) ||
       t.tags.some(tag => tag.includes(q));
   });
 
@@ -238,16 +280,32 @@ function buildCard(t) {
   card.className = 'card';
   card.addEventListener('click', () => openModal(t.id));
 
+  // Determine which prompt to show on the card
+  const cardPrompt = effectivePrompt(t, activePlatform);
+
   // Header
   const hdr = document.createElement('div');
   hdr.className = 'card-header';
+
+  const meta = document.createElement('div');
+  meta.className = 'card-meta';
   const badge = document.createElement('span');
-  badge.className = 'category-badge badge-' + t.category.replace(/\s+/g, '-');
+  badge.className = 'category-badge badge-' + t.category.replace(/\\s+/g, '-');
   badge.textContent = t.category;
+  meta.appendChild(badge);
+
+  // Show "Airchat only" chip when viewing all platforms
+  if (activePlatform === 'all' && isAirchatOnly(t)) {
+    const chip = document.createElement('span');
+    chip.className = 'platform-chip chip-airchat';
+    chip.textContent = 'Airchat / CLI';
+    meta.appendChild(chip);
+  }
+
   const dateEl = document.createElement('span');
   dateEl.className = 'card-date';
   dateEl.textContent = formatDate(t.date);
-  hdr.appendChild(badge);
+  hdr.appendChild(meta);
   hdr.appendChild(dateEl);
 
   // Body
@@ -261,7 +319,7 @@ function buildCard(t) {
   concept.textContent = t.concept;
   const preview = document.createElement('div');
   preview.className = 'prompt-preview';
-  preview.textContent = t.prompt;
+  preview.textContent = cardPrompt;
   body.appendChild(title);
   body.appendChild(concept);
   body.appendChild(preview);
@@ -287,7 +345,7 @@ function buildCard(t) {
   copyBtn.className = 'btn-copy';
   copyBtn.id = 'copy-' + t.id;
   copyBtn.textContent = 'Copy prompt';
-  copyBtn.addEventListener('click', e => { e.stopPropagation(); copyPrompt(t, copyBtn); });
+  copyBtn.addEventListener('click', e => { e.stopPropagation(); copyText(cardPrompt, copyBtn); });
   actions.appendChild(expandBtn);
   actions.appendChild(copyBtn);
 
@@ -298,13 +356,26 @@ function buildCard(t) {
   return card;
 }
 
-function openModal(id) {
+function openModal(id, platformOverride) {
   const t = TIPS.find(x => x.id === id);
   if (!t) return;
-  activeModal = t;
+
+  // Default modal platform: match the active filter, or 'airchat' if not specified
+  if (platformOverride) {
+    activeModalPlatform = platformOverride;
+  } else if (!platformOverride && document.getElementById('modal').classList.contains('open')) {
+    // keep existing selection if modal is already open (toggling)
+  } else {
+    activeModalPlatform = (activePlatform === 'desktop' && t.desktop_variant) ? 'desktop' : 'airchat';
+  }
 
   const inner = document.getElementById('modal-inner');
   inner.textContent = '';
+
+  // Determine which prompt to show
+  const modalPrompt = (activeModalPlatform === 'desktop' && t.desktop_variant)
+    ? t.desktop_variant.prompt
+    : t.prompt;
 
   // Header
   const mhdr = document.createElement('div');
@@ -329,11 +400,40 @@ function openModal(id) {
   conceptEl.textContent = t.concept;
   mbody.appendChild(conceptEl);
 
+  // Platform toggle (only if tip has a desktop variant)
+  if (t.desktop_variant) {
+    mbody.appendChild(label('Platform'));
+    const toggleRow = document.createElement('div');
+    toggleRow.className = 'modal-platform-row';
+
+    const airBtn = document.createElement('button');
+    airBtn.className = 'modal-platform-btn' + (activeModalPlatform === 'airchat' ? ' active' : '');
+    airBtn.textContent = 'Airchat / Claude Code';
+    airBtn.addEventListener('click', () => openModal(id, 'airchat'));
+
+    const deskBtn = document.createElement('button');
+    deskBtn.className = 'modal-platform-btn' + (activeModalPlatform === 'desktop' ? ' active' : '');
+    deskBtn.textContent = 'Claude Desktop';
+    deskBtn.addEventListener('click', () => openModal(id, 'desktop'));
+
+    toggleRow.appendChild(airBtn);
+    toggleRow.appendChild(deskBtn);
+    mbody.appendChild(toggleRow);
+  }
+
   mbody.appendChild(label('The prompt'));
   const promptEl = document.createElement('div');
   promptEl.className = 'prompt-block';
-  promptEl.textContent = t.prompt;
+  promptEl.textContent = modalPrompt;
   mbody.appendChild(promptEl);
+
+  // Desktop note (shown when in desktop mode and note exists)
+  if (activeModalPlatform === 'desktop' && t.desktop_variant && t.desktop_variant.note) {
+    const noteEl = document.createElement('div');
+    noteEl.className = 'desktop-note';
+    noteEl.textContent = t.desktop_variant.note;
+    mbody.appendChild(noteEl);
+  }
 
   mbody.appendChild(label('What to customize'));
   const list = document.createElement('ul');
@@ -365,7 +465,7 @@ function openModal(id) {
   copyFullBtn.className = 'btn-copy-full';
   copyFullBtn.id = 'modal-full-copy-' + t.id;
   copyFullBtn.textContent = 'Copy prompt to clipboard';
-  copyFullBtn.addEventListener('click', () => copyPrompt(t, copyFullBtn));
+  copyFullBtn.addEventListener('click', () => copyText(modalPrompt, copyFullBtn));
   mfooter.appendChild(copyFullBtn);
 
   inner.appendChild(mhdr);
@@ -386,11 +486,11 @@ function label(text) {
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
-  activeModal = null;
+  activeModalPlatform = 'airchat';
 }
 
-function copyPrompt(t, btn) {
-  navigator.clipboard.writeText(t.prompt).then(() => {
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
