@@ -21,7 +21,20 @@ const https = require('https');
 const CHANNEL = process.env.DIGEST_CHANNEL || 'C0APQHS7MFS';
 const DAYS_BACK = parseInt(process.env.DIGEST_DAYS || '7', 10);
 const DRY_RUN = !!process.env.DRY_RUN;
-const TOKEN = process.env.SLACK_BOT_TOKEN;
+
+// Token: env var first, then local secret file
+function loadToken() {
+  if (process.env.SLACK_BOT_TOKEN) return process.env.SLACK_BOT_TOKEN.trim();
+  const candidates = [
+    path.join(process.env.HOME || '', '.secrets', 'slack-growth-ai.txt'),
+    '/secrets/slack-growth-ai.txt',
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return fs.readFileSync(p, 'utf8').trim();
+  }
+  return null;
+}
+const TOKEN = loadToken();
 
 function getTipsThisWeek(tips) {
   const cutoff = new Date();
